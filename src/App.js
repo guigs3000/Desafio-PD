@@ -17,7 +17,7 @@ class App extends Component {
 	render() {
 		return (
 
-			<div className="ui container">
+			<div>
 				<Route path="/" exact component={HomePage} />
 				<Route path="/colecao" exact component={ColecaoPage} />
 

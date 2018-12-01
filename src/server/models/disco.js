@@ -18,7 +18,8 @@ module.exports = (sequelize, type) => {
 				allowNull: true
 		},
 		 image: {
-				type: type.BLOB,
+				type: type.STRING,
+				allowNull: true
 		},
 		 gravadora: {
 				type: type.STRING,

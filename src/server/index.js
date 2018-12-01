@@ -1,23 +1,47 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
+const multer = require("multer");
+const { Disco, Colecao} = require('./sequelize');
+
+
+const dirName = "./public/imagens";
 
 const app = express();
 app.use(bodyParser.json());
-
 
 const port = 3001
 app.listen(port, () => {
     console.log(`Running on http://localhost:${port}`)
 });
 
-const { Disco, Colecao} = require('./sequelize');
+
+// configure storage
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, dirName);
+      },
+      filename: (req, file, cb) => {
+        cb(null, file.originalname);
+      },
+    });
+    const upload = multer({ storage });
 
 //funcoes Disco
-app.post('/api/disco', (req, res) => {
-    Disco.create(req.body)
+
+//Adicionar disco
+app.post('/api/disco', upload.single('file'), (req, res) => {
+    //console.log(req.file);
+    const file = req.file;
+    const meta = req.body;
+    console.log(meta.data);
+    //res.send();
+    Disco.create(JSON.parse(meta.data))
         .then(disco => res.json(disco));
+
 });
 
+//Obter todos discos
 app.get("/api/discos", (req, res) => {
 	Disco.findAll().then(discos => res.json(discos));
 });
