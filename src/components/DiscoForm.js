@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Button, Modal} from 'semantic-ui-react';
-//import { compose } from 'recompose';
-//import { withRouter } from 'react-router-dom';
-//import { Form, Field } from 'react-final-form';
 import Validator from 'validator';
 import InlineError from './InlineError';
 
@@ -23,15 +20,12 @@ class DiscoForm extends React.Component{
 	}
 
 	handleChange(e){
-		//console.log(e.target.files[0]);
-		//this.setState({data: {...this.state.data, image: e.target.files[0].name}});
+		
 		this.setState({imageFile: e.target.files[0]});
-		//this.setState({ data: {...this.state.data, [e.target.name]: e.target.value}});
-		//this.setState({ imageFile: });
+
 	}
 	onChange = e => (
 		this.setState({ data: {...this.state.data, [e.target.name]: e.target.value}})
-		//console.log(this.state.data)
 	);
 	
 	onSubmit = () =>  {
