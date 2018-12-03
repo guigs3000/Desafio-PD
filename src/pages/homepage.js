@@ -1,4 +1,5 @@
-import {Button} from 'semantic-ui-react';
+import {Button, Search} from 'semantic-ui-react';
+import _ from 'lodash';	
 import React from 'react';
 import {Link} from "react-router-dom";
 import DiscoForm from '../components/DiscoForm';
@@ -12,11 +13,74 @@ class HomePage extends React.Component{
 		isOpenModalAddDisco: false,
 		isOpenModalEditDisco: false,
 		editDiscoId: "",
-		listaDisco: []
+		listaTodosDiscos: [],
+		listaDiscosFiltrados: [],
+		listaDiscosFiltradosMini: [],
+		results:[],
+		value: "",
+		isLoading: false
 	}
 
 	componentDidMount(){
 		this.getDiscos();
+	}
+
+	componentWillMount() {
+    	this.resetComponent()
+  	}
+
+	resetComponent = () =>{
+        this.setState({ isLoading: false, results: [], value: "" });
+        this.setState({listaDiscosFiltrados: this.state.listaTodosDiscos});
+	}
+
+	searchToDisco = (lista) => {
+
+		const listaDisco = [];
+		lista.map( (item, index) => {
+			console.log(item.key)
+			const itemFound = this.state.listaTodosDiscos.filter( obj => {
+				return obj.id === item.key
+			})
+			console.log(itemFound);
+			listaDisco.push(itemFound[0])
+			/*
+			const i = _.indexOf(this.state.listaTodosDiscos, {id: item.key})
+			console.log(i);	
+			if( i != -1) {
+				listaDisco.push(this.state.listaTodosDiscos[i]);
+			}*/
+		})
+		
+		console.log(listaDisco);
+		return listaDisco;
+	}
+
+	handleResultSelect = (e, { result }) => {
+		this.setState({ value: result.title })
+		this.setState({ listaDiscosFiltrados: this.searchToDisco(this.state.results) })
+	}
+
+	onSearchChange = (e, {value}) => {
+		this.setState({isLoading: true, value});
+
+		setTimeout(() => {
+            if (this.state.value.length < 1) this.resetComponent();
+
+            const re = new RegExp(_.escapeRegExp(this.state.value), "i");
+            
+            const isMatch = result => {
+            	console.log(result)
+            	return re.test(result.title);
+            }
+            console.log(this.state.listaDiscosFiltradosMini)
+            this.setState({
+                isLoading: false,
+                results: _.filter(this.state.listaDiscosFiltradosMini, isMatch)
+            });
+
+        }, 500);
+
 	}
 
   	openModalAddDisco = () => this.setState({ isOpenModalAddDisco: true })
@@ -42,19 +106,25 @@ class HomePage extends React.Component{
   		axios.get("/api/discos")
             .then((response) => {
                 const lista = response.data;
-                this.setState({listaDisco: lista});
-                console.log(response);
+                this.setState({listaTodosDiscos: lista});
+                this.setState({listaDiscosFiltrados: lista});
+                const listaPequisa = [];
+                lista.map((item, index) => {
+                	const disco = {key: item.id, title: item.nome_album, image: process.env.PUBLIC_URL + "/imagens/" + item.image}
+                	listaPequisa.push(disco)
+                })
+                this.setState({listaDiscosFiltradosMini: listaPequisa})
+
             }).catch((error) => {
         		console.log(error);
         	});
   	}
 
 	addDisco = data => {
+		console.log(data)
 		if(data.imageFile){
 			data.data.image = data.imageFile.name.replace(/ /g,'');
 		}
-		console.log(data);
-
 		const dataForm = new FormData();
 
 		dataForm.append('file', data.imageFile);
@@ -73,7 +143,7 @@ class HomePage extends React.Component{
 	}
 
 	editDisco = data => {
-		console.log(data);
+		console.log(data)
 		data.id = this.state.editDiscoId;
 		axios.put("/api/disco",data)
             .then((response) => {
@@ -101,11 +171,24 @@ class HomePage extends React.Component{
 
 				<h1 style={{display: "inline-block"}}>Discos</h1>
 				<Button id="addDisco-btn" className="mini ui primary button" style={{position: "relative", left:"1em"}} onClick={this.openModalAddDisco}>+</Button>
+				<Search
+					onSearchChange={this.onSearchChange}
+					onResultSelect={this.handleResultSelect}
+					loading={this.state.isLoading} 
+					results={this.state.results}
+					value={this.state.value}
+					type="text" placeholder="pesquisar discos..." size="small"
+					
+				></Search>
 			<hr/>
 
 			<div className="ui cards">
-				{this.state.listaDisco.map( (item, index) => {
-					return <DiscoItem key={item.id} data={item} deleteItem={this.deleteItem} openModalEditDisco={this.openModalEditDisco}></DiscoItem>
+				{this.state.listaDiscosFiltrados.map( (item, index) => {
+					console.log("cards")
+					console.log(item);
+					return <DiscoItem key={item.id} data={item} 
+					deleteItem={this.deleteItem} 
+					openModalEditDisco={this.openModalEditDisco}></DiscoItem>
 				})}
 			</div>
 

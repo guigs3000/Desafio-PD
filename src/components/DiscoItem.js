@@ -18,7 +18,15 @@ class DiscoItem extends React.Component {
         <img src={process.env.PUBLIC_URL + '/imagens/' +  this.props.data.image}/>
       </div>
       <div className="content">
-        <span>{this.props.data.nome_album}</span>
+        <span className="header">{this.props.data.nome_album}</span>
+        <div className="meta">
+          <span className="date">{this.props.data.ano_lancamento}</span>
+          <span>{this.props.data.gravadora}</span>
+
+        </div>
+        <div className="description">
+          <span>{this.props.data.genero}</span>
+        </div>
       </div>
       <div className="extra content">
       <div className="ui two buttons">

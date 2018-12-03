@@ -56,14 +56,18 @@ app.get("/api/disco/:nome", (req, res) => {
 //Editar informacoes do disco
 app.put("/api/disco", (req, res) => {
 	var discoUpdate  = req.body;
-	Disco.update(
-		{ nome_album: discoUpdate.nome_album ? discoUpdate.nome_album : this.nome_album, 
-		  ano_lancamento: discoUpdate.ano_lancamento ? discoUpdate.ano_lancamento : this.ano_lancamento,
-		  genero: discoUpdate.genero ? discoUpdate.genero : this.genero,
-		  gravadora: discoUpdate.gravadora ? discoUpdate.gravadora : this.gravadora
+    Disco.findById(discoUpdate.id)
+    .then( disco => {
+        Disco.update(
+        { nome_album: discoUpdate.nome_album ? discoUpdate.nome_album : disco.nome_album, 
+          ano_lancamento: discoUpdate.ano_lancamento ? discoUpdate.ano_lancamento : disco.ano_lancamento,
+          genero: discoUpdate.genero ? discoUpdate.genero : disco.genero,
+          gravadora: discoUpdate.gravadora ? discoUpdate.gravadora : disco.gravadora
         },
-		{where: {id: discoUpdate.id}}
-	).then( result => res.json(result));
+        {where: {id: discoUpdate.id}}
+        ).then( result => res.json(result));
+    })
+	
 });
 
 //Exclusao de Disco
