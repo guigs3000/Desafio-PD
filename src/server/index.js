@@ -46,12 +46,14 @@ app.get("/api/discos", (req, res) => {
 	Disco.findAll().then(discos => res.json(discos));
 });
 
+//Busca pelo nome exato
 app.get("/api/disco/:nome", (req, res) => {
 	var nome = req.params.nome;
 	Disco.findOne({ where: {nome_album: nome}})
 		.then(disco => res.json(disco));
 });
 
+//Editar informacoes do disco
 app.put("/api/disco", (req, res) => {
 	var discoUpdate  = req.body;
 	Disco.update(
@@ -64,6 +66,7 @@ app.put("/api/disco", (req, res) => {
 	).then( result => res.json(result));
 });
 
+//Exclusao de Disco
 app.delete("/api/disco", (req, res) => {
 	Disco.findOne({ where: {id: req.body.id}})
         .then(disco => {
@@ -82,13 +85,14 @@ app.delete("/api/disco", (req, res) => {
 });
 
 //funcoes Colecoes
+
+//Criacao de colecao
 app.post('/api/colecao', (req, res) => {
     Colecao.create(req.body)
         .then(colecao => res.json(colecao));
 });
 
-
-
+//obter todas colecoes
 app.get('/api/colecoes', (req, res) => {
     Colecao.findAll({
         include: [{
@@ -101,6 +105,7 @@ app.get('/api/colecoes', (req, res) => {
     .then(colecoes => res.json(colecoes));
 });
 
+//exclusao de colecao
 app.delete("/api/colecao", (req, res) => {
     
     Colecao.destroy({
@@ -109,6 +114,7 @@ app.delete("/api/colecao", (req, res) => {
 
 });
 
+//busca discos de uma colecao especifica
 app.get("/api/getDiscosDeColecao/:colecaoId", (req, res) => {
     var colecaoId = req.params.colecaoId;
 
@@ -128,6 +134,7 @@ app.get("/api/getDiscosDeColecao/:colecaoId", (req, res) => {
 
 })
 
+//adiciona disco a uma colecao
 app.post("/api/addDiscoToColecao", (req, res) =>{
     const data = req.body;
 
@@ -161,15 +168,11 @@ app.post("/api/addDiscoToColecao", (req, res) =>{
                 console.log(c);
                 res.json(c.discos);    
             })
-            
-            /*Disco.findById(data.discoId).then(d => {
-                d.addColecao(data.colecaoId);   
-                res.json(d.colecaos);
-            })*/
         }
     })
 })
 
+//deleta disco de uma colecao
 app.delete("/api/deleteDiscoFromColecao", (req, res) =>{
     const data = req.body;
     Colecao.find({

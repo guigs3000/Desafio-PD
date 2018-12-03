@@ -2,6 +2,7 @@ var Sequelize = require('sequelize');
 var DiscoModel = require('./models/disco');
 var ColecaoModel = require('./models/colecao');
 
+
 var sequelize = new Sequelize('desafiopd', 'root', '50CEd470!@',
 {
 	host: 'localhost',

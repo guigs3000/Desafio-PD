@@ -37,15 +37,21 @@ class ColecaoPage extends React.Component {
   	}
 
 	getColecoes = () => {
+    console.log("getcolecoes");
   		axios.get("/api/colecoes")
             .then((response) => {
+                console.log(response.data);
+
                 const lista = response.data;
                 this.setState({listaColecao: lista});
+
                 if(this.state.colecaoIdSelected){
-                	const col = this.state.listaColecao.find( c => (c.id===this.state.colecaoIdSelected));
+                	const col = lista.find( c => (c.id===this.state.colecaoIdSelected));
+                  console.log(col);
                 	this.setState({discosDeColecaoSelected: col.discos})
                 }
-                console.log(response);
+                console.log("===============================")
+                
             }).catch((error) => {
         		console.log(error);
         	});
@@ -74,12 +80,13 @@ class ColecaoPage extends React.Component {
         	});
 	}
 
-  	submit = data => {
+  submit = data => {
 		console.log(data);
 		data.id = this.state.editDiscoId;
 		axios.post("/api/colecao",data)
             .then((response) => {
                 console.log(response);
+                this.getColecoes();
             }).catch((error) => {
         		console.log(error);
         	});
@@ -93,22 +100,12 @@ class ColecaoPage extends React.Component {
             }
         };
 		axios.post("/api/addDiscoToColecao", data, config)
-            .then((response) => {
+      .then((response) => {
             	//set discos de colecao
-            	console.log(response.data);
-            	const lista = response.data;
-            	const listaCopy = this.state.listaColecao.slice();
-                listaCopy.forEach((col) =>{
-                	if(col.id === colecaoId){
-                		col.discos = lista;
-                	}
-                })
-                //this.setState({listaColecao: listaCopy });
-                //this.setState({discosDeColecaoSelected: lista})
-                this.getColecoes();
-            }).catch((error) => {
-        		console.log(error)
-        	});
+       	console.log(response.data);
+      }).catch((error) => {
+   		  console.log(error)
+     	});
 	}
 
 	deleteDiscoFromColecao = (data) => {
@@ -119,20 +116,7 @@ class ColecaoPage extends React.Component {
 
   		axios.delete("/api/deleteDiscoFromColecao", {data: dataSend}) 
   			.then(res => {
-  				//set discos de colecao
-  				const lista = res.data;
-  				console.log(res.data);
-            	const listaCopy = this.state.listaColecao.slice();
-                listaCopy.forEach((col) =>{
-                	if(col.id === data.colecaoId){
-                		col.discos = lista;
-                	}
-                })
-                console.log(listaCopy)
-                /*this.setState({listaColecao: listaCopy });
-                this.setState({discosDeColecaoSelected: lista});*/
-                //this.getDiscosDeColecao(data.colecaoId);
-                this.getColecoes();
+          this.closeModalListaDisco();
   			})
   			.catch((error) => {
   				console.log(error);
@@ -140,33 +124,33 @@ class ColecaoPage extends React.Component {
 	}
 
 	deleteItem = (id) => {
-  		console.log(id);
-  		axios.delete("/api/colecao", {data: {id: id}})
-  			.then(res => {
-  				console.log(res);
-  			})
-  			.catch((error) => {
-  				console.log(error);
-  			})
-
+  	console.log(id);
+  	axios.delete("/api/colecao", {data: {id: id}})
+  		.then(res => {
+  			console.log(res);
+        this.getColecoes();
+  		})
+  		.catch((error) => {
+  			console.log(error);
+  		})
 	}
 
 	//modais
 	openModal = () => this.setState({ isOpenModal: true })
-  	closeModal = () => this.setState({ isOpenModal: false })
+  closeModal = () => this.setState({ isOpenModal: false })
 
-  	openModalListaDisco = (colecao) => {
+  openModalListaDisco = (colecao) => {
   		//if(discosDeColecao.colecaoId)
-  		this.setState(
-  		{ 
-  			isOpenModalListaDisco: true,
-  			colecaoSelected: colecao.nome,
-  			colecaoIdSelected: colecao.id,
-  			discosDeColecaoSelected: colecao.discos
-  		})
+  	this.setState(
+  	{ 
+  		isOpenModalListaDisco: true,
+  		colecaoSelected: colecao.nome,
+  		colecaoIdSelected: colecao.id
+  	})
+    this.getColecoes();
   	}
 
-  	closeModalListaDisco = () => this.setState({ isOpenModalListaDisco: false })
+  closeModalListaDisco = () => this.setState({ isOpenModalListaDisco: false })
 
 
 	render() {
