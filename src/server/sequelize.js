@@ -15,7 +15,15 @@ var sequelize = new Sequelize('desafiopd', 'root', '50CEd470!@',
 const Disco = DiscoModel(sequelize, Sequelize);
 const Colecao = ColecaoModel(sequelize, Sequelize);
 
-Colecao.hasMany(Disco, {as: 'Discos'});
+Colecao.belongsToMany(Disco, {
+	through: "item_colecao",
+	foreignKey: "colecaoId"
+});
+
+Disco.belongsToMany(Colecao, {
+	through: "item_colecao",
+	foreignKey: "discoId"
+});
 
 sequelize.sync().then(()=>{
 	console.log("ok");

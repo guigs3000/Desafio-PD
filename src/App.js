@@ -11,6 +11,7 @@ import HomePage from "./pages/homepage";
 import ColecaoPage from "./pages/colecaopage";
 
 
+
 class App extends Component {
 
 

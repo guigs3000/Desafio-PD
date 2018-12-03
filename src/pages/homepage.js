@@ -53,7 +53,7 @@ class HomePage extends React.Component{
 		if(data.imageFile){
 			data.data.image = data.imageFile.name.replace(/ /g,'');
 		}
-		//console.log(data);
+		console.log(data);
 
 		const dataForm = new FormData();
 
@@ -66,27 +66,22 @@ class HomePage extends React.Component{
         };
 		axios.post("/api/disco",dataForm,config)
             .then((response) => {
-                alert("The file is successfully uploaded");
                 this.getDiscos();
-            }).catch((error) => {
-        
+            }).catch((error) => {	
+        		alert(error)
         	});
-	};
+	}
 
 	editDisco = data => {
 		console.log(data);
 		data.id = this.state.editDiscoId;
 		axios.put("/api/disco",data)
             .then((response) => {
-                alert("The file is successfully uploaded");
                 this.getDiscos();
             }).catch((error) => {
-        		console.log(error);
+        		alert(error);
         	});
-	};
-
-
-	
+	}
 
 	render(){
 

@@ -8,7 +8,7 @@ class DiscoEditor extends React.Component{
   state = {
     data: {
       nome_album: '',
-      data_lancamento: '',
+      ano_lancamento: '',
       genero: '',
       gravadora: ''
       
@@ -55,9 +55,9 @@ class DiscoEditor extends React.Component{
         {this.state.errors.nome_album && <InlineError text={this.state.errors.nome_album}/>}
         </Form.Field>
         <Form.Field>
-          <label htmlFor="data_lancamento">Data Lancamento</label>
-          <input type="text" id="data_lancamento" name="data_lancamento"
-            value={this.state.data.data_lancamento}
+          <label htmlFor="ano_lancamento">Ano Lancamento</label>
+          <input type="text" id="ano_lancamento" name="ano_lancamento"
+            value={this.state.data.ano_lancamento}
             onChange={this.onChange}
           />
         </Form.Field>
@@ -78,7 +78,7 @@ class DiscoEditor extends React.Component{
           />
         </Form.Field>
         
-      <Button primary>Adicionar</Button>
+      <Button primary>Editar</Button>
       </Form>
       
       </Modal.Content>
